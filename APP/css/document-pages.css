@@ -1,0 +1,180 @@
+:root {
+    color-scheme: light;
+    --primary-color: #305ADA;
+    --primary-hover: #1E42A8;
+    --text-dark: #202951;
+    --text-main: #45464A;
+    --accent-yellow: #FFCC08;
+    --border-color: #E5E7EB;
+    --bg-light: #F3F4F6;
+    --bg-white: #FFFFFF;
+    --focus-color: #305ADA;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--bg-white);
+    color: var(--text-main);
+    font: 16px/1.5 'Open Sans', Arial, sans-serif;
+}
+
+.page-header {
+    padding: 0.8rem 1.5rem;
+    background: var(--bg-white);
+    border-bottom: 6px solid var(--accent-yellow);
+}
+
+.page-header-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.page-header-logo {
+    grid-column: 1;
+    justify-self: start;
+    width: auto;
+    height: 55px;
+    object-fit: contain;
+}
+
+.page-header-copy {
+    grid-column: 2;
+    min-width: 0;
+    text-align: center;
+}
+
+.page-header-copy .eyebrow {
+    margin: 0 0 0.35rem;
+    color: var(--primary-color);
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+h1, h2, h3, dt {
+    font-family: 'Montserrat', Arial, sans-serif;
+    color: var(--text-dark);
+}
+
+h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.page-header-copy .lead {
+    max-width: 680px;
+    margin: 0.6rem auto 0;
+    color: var(--text-main);
+}
+
+main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.25rem;
+}
+
+section {
+    padding: 1.2rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+h2 {
+    margin: 0 0 0.65rem;
+    color: var(--text-dark);
+    font-size: 20px;
+    line-height: 1.35;
+}
+
+h3 {
+    margin: 0.8rem 0 0.4rem;
+    font-size: 17px;
+    line-height: 1.4;
+}
+
+p { margin: 0.5rem 0; }
+ol, ul { margin: 0.5rem 0 0; padding-left: 1.5rem; }
+li { margin: 0.45rem 0; }
+a { color: var(--primary-color); }
+
+.reading-key {
+    padding: 0.9rem 1rem;
+    background: var(--bg-light);
+    border-left: 4px solid var(--primary-color);
+}
+
+.notice {
+    margin: 0 0 0.5rem;
+    padding: 0.9rem 1rem;
+    background: #FFF7D6;
+    border-left: 4px solid #E1B600;
+}
+
+.field-list { margin: 0; }
+.field-list div { padding: 0.75rem 0; border-bottom: 1px solid var(--border-color); }
+.field-list div:last-child { border-bottom: 0; }
+dt { color: var(--primary-color); font-weight: 700; }
+dd { margin: 0.2rem 0 0; }
+
+.criteria {
+    display: grid;
+    grid-template-columns: minmax(7.5rem, 0.25fr) 1fr;
+    gap: 0.35rem 1rem;
+}
+
+.criteria dt, .criteria dd { padding: 0.35rem 0; }
+.criteria dd { margin: 0; }
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    padding: 1.2rem 0 2rem;
+}
+
+button {
+    min-height: 44px;
+    padding: 0.55rem 1rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    background: var(--primary-color);
+    color: var(--bg-white);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+button:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+button.secondary { background: var(--bg-white); color: var(--primary-color); }
+button.secondary:hover { background: var(--bg-light); }
+button:focus-visible { outline: 3px solid var(--accent-yellow); outline-offset: 2px; }
+
+@media (max-width: 600px) {
+    .page-header { padding: 1rem; }
+    .page-header-inner { grid-template-columns: 1fr; gap: 0.75rem; }
+    .page-header-logo { grid-column: 1; justify-self: center; height: 44px; }
+    .page-header-copy { grid-column: 1; }
+    h1 { font-size: 20px; }
+    main { padding: 0 1rem; }
+    .criteria { grid-template-columns: 1fr; gap: 0; }
+    .criteria dt { padding-bottom: 0; }
+    .criteria dd { padding-top: 0; }
+}
+
+@media print {
+    body { background: var(--bg-white); }
+    .page-header { padding: 0.75rem 0; border-bottom-width: 3px; }
+    .page-header-inner { max-width: none; grid-template-columns: 60px 1fr 60px; }
+    .page-header-logo { height: 48px; }
+    .page-header-copy { grid-column: 2; }
+    main { max-width: none; padding: 0; }
+    .actions { display: none; }
+    section { break-inside: avoid; }
+}

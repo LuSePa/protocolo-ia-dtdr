@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Guía de uso del generador — Protocolo de IA | JCCM</title>
+    <link rel="stylesheet" href="css/fonts.css">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Open Sans', Arial, sans-serif;
+            background: #F8FAFC;
+            color: #1E293B;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        .access-card {
+            background: #FFFFFF;
+            border: 1px solid #CBD5E1;
+            border-top: 5px solid #305ADA;
+            border-radius: 6px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+            width: 100%;
+            max-width: 520px;
+            padding: 2.25rem 2rem;
+            text-align: center;
+        }
+        .access-logo {
+            height: 52px;
+            width: auto;
+            max-width: 200px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 1.25rem auto;
+        }
+        .access-title {
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #1E293B;
+            margin: 0 0 0.4rem 0;
+            line-height: 1.3;
+        }
+        .access-subtitle {
+            font-size: 0.92rem;
+            color: #475569;
+            margin: 0 0 1.25rem 0;
+            line-height: 1.45;
+        }
+        .access-info-box {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-left: 4px solid #305ADA;
+            border-radius: 4px;
+            padding: 0.9rem 1rem;
+            text-align: left;
+            font-size: 0.88rem;
+            color: #334155;
+            line-height: 1.5;
+            margin-bottom: 1.4rem;
+        }
+        .access-form { text-align: left; }
+        .access-label {
+            display: block;
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #1E293B;
+            margin-bottom: 0.45rem;
+        }
+        .access-input-wrapper {
+            display: flex;
+            gap: 0.5rem;
+            align-items: stretch;
+        }
+        .access-input {
+            flex: 1;
+            min-width: 0;
+            padding: 0.65rem 0.85rem;
+            font-family: 'Open Sans', Arial, sans-serif;
+            font-size: 0.95rem;
+            color: #1E293B;
+            background: #FFFFFF;
+            border: 1px solid #94A3B8;
+            border-radius: 4px;
+        }
+        .access-input:focus {
+            outline: 2px solid #305ADA;
+            outline-offset: 1px;
+            border-color: #305ADA;
+        }
+        .btn-toggle-pwd {
+            padding: 0 0.85rem;
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #1E293B;
+            background: #F1F5F9;
+            border: 1px solid #94A3B8;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-toggle-pwd:hover { background: #E2E8F0; }
+        .btn-toggle-pwd:focus-visible,
+        .btn-access-submit:focus-visible {
+            outline: 2px solid #1E293B;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px #FFCC08;
+        }
+        .access-error-msg {
+            display: none;
+            margin-top: 0.75rem;
+            padding: 0.65rem 0.85rem;
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            border-left: 4px solid #DC2626;
+            border-radius: 4px;
+            color: #991B1B;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        .btn-access-submit {
+            width: 100%;
+            margin-top: 1.15rem;
+            padding: 0.75rem 1.25rem;
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            background: #305ADA;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+        .btn-access-submit:hover { background: #1E42A8; }
+        .btn-access-submit:disabled { background: #64748B; cursor: wait; }
+        .unlocking-status {
+            display: none;
+            font-size: 0.92rem;
+            color: #334155;
+            padding: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <main class="access-card" id="access-gate" role="dialog" aria-modal="true" aria-labelledby="dtdr-access-title">
+        <img class="access-logo" src="logo-jccm.png" alt="Logotipo de la Junta de Comunidades de Castilla-La Mancha">
+        <h1 id="dtdr-access-title" class="access-title">Paquete de acompañamiento técnico DTDR — Protocolo de IA</h1>
+        <p class="access-subtitle">Consejería de Educación, Cultura y Deportes de Castilla-La Mancha</p>
+        <div id="unlocking-status" class="unlocking-status">Verificando sesión autorizada...</div>
+        <div id="access-panel">
+            <div class="access-info-box">
+                <strong>Contenido cifrado para uso interno de dinamización y asesoramiento</strong><br>
+                Introduce la clave de acceso facilitada para descifrar y consultar este documento.
+            </div>
+            <form id="dtdr-access-form" class="access-form" novalidate>
+                <label for="access-password" class="access-label">Clave de acceso</label>
+                <div class="access-input-wrapper">
+                    <input type="password" id="access-password" class="access-input" placeholder="Introduce la clave de acceso" autocomplete="current-password" required>
+                    <button type="button" id="btn-toggle-pwd" class="btn-toggle-pwd" aria-pressed="false" aria-controls="access-password">Mostrar</button>
+                </div>
+                <div id="access-error" class="access-error-msg" role="alert"></div>
+                <button type="submit" id="btn-access-submit" class="btn-access-submit">Descifrar y acceder</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        (function () {
+            'use strict';
+            var SESSION_KEY = 'dtdr_aes256_key';
+            var PAYLOAD = {"v":1,"iter":600000,"salt":"QNAocNTYec67pvthU3nypw==","iv":"StK2eAWoX+wPnPR0","data":"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"};
+            var unlocked = false;
+
+            function b64ToBytes(b64) {
+                var bin = atob(b64);
+                var len = bin.length;
+                var bytes = new Uint8Array(len);
+                for (var i = 0; i < len; i++) {
+                    bytes[i] = bin.charCodeAt(i);
+                }
+                return bytes;
+            }
+
+            function bytesToB64(bytes) {
+                var bin = '';
+                for (var i = 0; i < bytes.length; i++) {
+                    bin += String.fromCharCode(bytes[i]);
+                }
+                return btoa(bin);
+            }
+
+            async function deriveRawKey(password) {
+                var enc = new TextEncoder();
+                var baseKey = await window.crypto.subtle.importKey(
+                    'raw',
+                    enc.encode(password),
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveBits']
+                );
+                var bits = await window.crypto.subtle.deriveBits(
+                    {
+                        name: 'PBKDF2',
+                        salt: b64ToBytes(PAYLOAD.salt),
+                        iterations: PAYLOAD.iter,
+                        hash: 'SHA-256'
+                    },
+                    baseKey,
+                    256
+                );
+                return new Uint8Array(bits);
+            }
+
+            async function decryptWithRawKey(rawKeyBytes) {
+                var aesKey = await window.crypto.subtle.importKey(
+                    'raw',
+                    rawKeyBytes,
+                    { name: 'AES-GCM' },
+                    false,
+                    ['decrypt']
+                );
+                var plainBuffer = await window.crypto.subtle.decrypt(
+                    {
+                        name: 'AES-GCM',
+                        iv: b64ToBytes(PAYLOAD.iv)
+                    },
+                    aesKey,
+                    b64ToBytes(PAYLOAD.data)
+                );
+                return new TextDecoder().decode(plainBuffer);
+            }
+
+            async function renderDecryptedHtml(html) {
+                if (unlocked) return;
+                unlocked = true;
+                var parser = new DOMParser();
+                var parsedDoc = parser.parseFromString(html, 'text/html');
+
+                var scriptsToRun = [];
+                Array.from(parsedDoc.querySelectorAll('script')).forEach(function (node) {
+                    var inHead = !!(parsedDoc.head && parsedDoc.head.contains(node));
+                    var attrs = {};
+                    Array.from(node.attributes).forEach(function (a) {
+                        attrs[a.name] = a.value;
+                    });
+                    scriptsToRun.push({
+                        inHead: inHead,
+                        attrs: attrs,
+                        text: node.textContent || ''
+                    });
+                    if (node.parentNode) {
+                        node.parentNode.removeChild(node);
+                    }
+                });
+
+                window.bloquearSesionDTDR = function () {
+                    try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+                    window.location.reload();
+                };
+
+                while (document.body.attributes.length > 0) {
+                    document.body.removeAttribute(document.body.attributes[0].name);
+                }
+                if (parsedDoc.body) {
+                    Array.from(parsedDoc.body.attributes).forEach(function (attr) {
+                        document.body.setAttribute(attr.name, attr.value);
+                    });
+                }
+
+                if (parsedDoc.head) {
+                    document.head.innerHTML = parsedDoc.head.innerHTML;
+                }
+                if (parsedDoc.body) {
+                    document.body.innerHTML = parsedDoc.body.innerHTML;
+                }
+
+                for (var i = 0; i < scriptsToRun.length; i++) {
+                    var item = scriptsToRun[i];
+                    var scriptEl = document.createElement('script');
+                    Object.keys(item.attrs).forEach(function (k) {
+                        scriptEl.setAttribute(k, item.attrs[k]);
+                    });
+                    var targetParent = item.inHead ? document.head : document.body;
+                    if (item.attrs.src) {
+                        scriptEl.async = false;
+                        await new Promise(function (resolve) {
+                            scriptEl.onload = resolve;
+                            scriptEl.onerror = resolve;
+                            targetParent.appendChild(scriptEl);
+                        });
+                    } else {
+                        scriptEl.textContent = item.text;
+                        targetParent.appendChild(scriptEl);
+                    }
+                }
+
+                document.dispatchEvent(new Event('DOMContentLoaded', { bubbles: true }));
+                window.scrollTo(0, 0);
+            }
+
+            function showError(msg) {
+                var errorBox = document.getElementById('access-error');
+                if (errorBox) {
+                    errorBox.textContent = msg;
+                    errorBox.style.display = 'block';
+                }
+            }
+
+            function showPromptForm() {
+                var status = document.getElementById('unlocking-status');
+                var panel = document.getElementById('access-panel');
+                if (status) status.style.display = 'none';
+                if (panel) panel.style.display = 'block';
+                var input = document.getElementById('access-password');
+                if (input) setTimeout(function () { input.focus(); }, 60);
+            }
+
+            async function trySessionUnlock() {
+                if (!window.crypto || !window.crypto.subtle) {
+                    showPromptForm();
+                    showError('El descifrado AES-256 requiere ejecutar la página en un entorno web seguro (HTTPS, como GitHub Pages) o localhost.');
+                    return;
+                }
+                var savedB64 = null;
+                try { savedB64 = sessionStorage.getItem(SESSION_KEY); } catch (e) {}
+                if (!savedB64) {
+                    showPromptForm();
+                    return;
+                }
+                var status = document.getElementById('unlocking-status');
+                var panel = document.getElementById('access-panel');
+                if (panel) panel.style.display = 'none';
+                if (status) status.style.display = 'block';
+                try {
+                    var html = await decryptWithRawKey(b64ToBytes(savedB64));
+                    await renderDecryptedHtml(html);
+                } catch (err) {
+                    try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+                    showPromptForm();
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var form = document.getElementById('dtdr-access-form');
+                var input = document.getElementById('access-password');
+                var toggleBtn = document.getElementById('btn-toggle-pwd');
+                var submitBtn = document.getElementById('btn-access-submit');
+                var errorBox = document.getElementById('access-error');
+
+                if (toggleBtn && input) {
+                    toggleBtn.addEventListener('click', function () {
+                        var isPassword = input.type === 'password';
+                        input.type = isPassword ? 'text' : 'password';
+                        toggleBtn.textContent = isPassword ? 'Ocultar' : 'Mostrar';
+                        toggleBtn.setAttribute('aria-pressed', isPassword ? 'true' : 'false');
+                    });
+                }
+
+                if (form) {
+                    form.addEventListener('submit', async function (e) {
+                        e.preventDefault();
+                        if (!window.crypto || !window.crypto.subtle) {
+                            showError('El descifrado AES-256 requiere un entorno web seguro (HTTPS o localhost).');
+                            return;
+                        }
+                        var password = input ? input.value.trim() : '';
+                        if (!password) {
+                            showError('Introduce la clave de acceso para continuar.');
+                            if (input) input.focus();
+                            return;
+                        }
+                        if (errorBox) errorBox.style.display = 'none';
+                        if (submitBtn) {
+                            submitBtn.disabled = true;
+                            submitBtn.textContent = 'Verificando y descifrando...';
+                        }
+                        try {
+                            var rawKey = await deriveRawKey(password);
+                            var html = await decryptWithRawKey(rawKey);
+                            try { sessionStorage.setItem(SESSION_KEY, bytesToB64(rawKey)); } catch (err) {}
+                            await renderDecryptedHtml(html);
+                        } catch (err) {
+                            showError('Clave incorrecta. No ha sido posible descifrar el documento.');
+                            if (input) {
+                                input.value = '';
+                                input.focus();
+                            }
+                            if (submitBtn) {
+                                submitBtn.disabled = false;
+                                submitBtn.textContent = 'Descifrar y acceder';
+                            }
+                        }
+                    });
+                }
+
+                trySessionUnlock();
+            }, { once: true });
+        })();
+    </script>
+</body>
+</html>

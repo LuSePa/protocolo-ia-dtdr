@@ -1,0 +1,101 @@
+.section-help-toggle {
+    cursor: pointer;
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.section-help-toggle[aria-expanded="true"] {
+    background: var(--bg-white);
+    color: #1D5A94;
+    border: 2px solid #1D5A94;
+}
+
+.section-help-panel {
+    margin: -0.75rem 0 1rem;
+    padding: 0.8rem 1rem;
+    background: #EFF6FC;
+    border: 1px solid #A8C5DE;
+    border-left: 4px solid #1D5A94;
+    border-radius: 4px;
+    color: #273746;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.section-help-panel p {
+    margin: 0;
+}
+
+.inline-help-frame {
+    margin: 0 0 1rem;
+    padding: 0.8rem 1rem;
+    background: #EFF6FC;
+    border: 1px solid #A8C5DE;
+    border-left: 4px solid #1D5A94;
+    border-radius: 4px;
+    color: #273746;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.inline-help-frame p {
+    margin: 0;
+}
+
+.inline-help-frame p + p {
+    margin-top: 0.45rem;
+}
+
+.contextual-option {
+    margin-bottom: 0.75rem;
+    background: #F7F8F8;
+    border: 1px solid #E5E8E7;
+    border-radius: 4px;
+    padding: 0.25rem 0.25rem 0;
+}
+
+.contextual-option-help {
+    margin: 0.1rem 0.75rem 0.65rem 2.7rem;
+    color: #273746;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.option-rationale-panel {
+    margin: 0.35rem 0 0.85rem 3.35rem;
+    font-size: 14px;
+}
+
+.section-help-guidance {
+    margin: -0.55rem 0 1rem;
+    padding: 0.65rem 0.85rem;
+    background: #F4F7F6;
+    border-left: 3px solid #81998D;
+    border-radius: 3px;
+    color: #273746;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.section-help-panel .section-help-guidance {
+    margin: 0.45rem 0 0;
+    padding: 0.45rem 0 0;
+    background: transparent;
+    border: 0;
+    border-top: 1px solid #A8C5DE;
+    border-radius: 0;
+}
+
+.reminder-box {
+    margin: 0.65rem 0 0.85rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.45;
+    background-color: #FFF9E6;
+    border-left: 3px solid #D4A000;
+    color: #4A3E00;
+}
+
+.reminder-box strong {
+    color: #634A00;
+}
