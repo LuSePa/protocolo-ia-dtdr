@@ -174,7 +174,7 @@ const orientacionesLenguajeSencilloAlumnadoPorTipologia = {
     cee: 'Pide el apoyo que necesitas. Comprueba si la respuesta dice tu idea. Si no, cuéntaselo a tu profe. Así expresas bien lo que quieres decir.',
     ies: 'Compara la respuesta con el material de clase. Explica qué comprobaste y qué decidiste tú. Así demuestras lo que has aprendido.',
     fp: 'Practica con casos inventados. No uses datos reales de empresas. Compara la respuesta con los pasos del trabajo. Así practicas de forma segura.',
-    eoi: 'Practica idiomas con IA. Comprueba si las frases se usan así. Habla también con otras personas. Así mejoras tu forma de comunicarte.',
+    eoi: 'Si usas IA para practicar idiomas, comprueba si las frases se usan así. Habla también con otras personas. Así mejoras tu forma de comunicarte.',
     cepa: 'Usa la IA para lo que quieres aprender. Comprueba la respuesta. Pide ayuda si no está clara. Así avanzas a tu ritmo.',
     esad: 'Prueba ideas con IA. Decide cuáles quieres usar. Comprueba si puedes usar los textos y las imágenes. Así la obra sigue siendo tuya.',
     easd_ea: 'Si el centro permite usar IA en un proyecto, revisa el texto o la imagen. Decide qué ideas quieres usar y cuenta cuándo te ayudó la IA. Así muestras tu propio diseño.',
@@ -294,7 +294,7 @@ const fuentesBibliograficasAPA7 = [
         year: 2024,
         title: 'Reglamento (UE) 2024/1689 del Parlamento Europeo y del Consejo, de 13 de junio de 2024, por el que se establecen normas armonizadas en materia de inteligencia artificial y por el que se modifican los Reglamentos (CE) n.º 300/2008, (UE) n.º 167/2013, (UE) n.º 168/2013, (UE) 2018/858, (UE) 2018/1139 y (UE) 2019/2144 y las Directivas 2014/90/UE, (UE) 2016/797 y (UE) 2020/1828 (Reglamento de Inteligencia Artificial)',
         publisher: 'Diario Oficial de la Unión Europea',
-        url: 'https://eur-lex.europa.eu/eli/reg/2024/1689/oj'
+        url: 'https://data.europa.eu/eli/reg/2024/1689/2026-07-27'
     }
 ];
 
@@ -344,7 +344,10 @@ function ordenarReferenciasAPA(referencias) {
 }
 
 function construirAnexoBibliografia(diagnostico) {
-    const { lista, pendientes } = ordenarReferenciasAPA(diagnostico.bibliografia);
+    const { lista, pendientes } = ordenarReferenciasAPA([
+        ...diagnostico.bibliografia,
+        'Reglamento (UE) 2024/1689'
+    ]);
     const menciones = separarMencionesBibliograficas(diagnostico.bibliografia);
 
     return {
@@ -752,15 +755,9 @@ function recopilarSeccion(selectorWrapper) {
                 }
 
                 if (mainChk.id === 'priv-4') {
-                    const servicios = [];
-                    if (state.serviciosGestionadosCentro) {
-                        const lineasCentro = String(state.serviciosGestionadosCentro).split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-                        servicios.push(...lineasCentro);
-                    }
-                    if (state.otrosEntornosInstitucionales) {
-                        const lineasOtros = String(state.otrosEntornosInstitucionales).split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-                        servicios.push(...lineasOtros);
-                    }
+                    const servicios = (state.modalidadesInstitucionales || []).includes('centro')
+                        ? String(state.serviciosGestionadosCentro || '').split(/\r?\n/).map(l => l.trim()).filter(Boolean)
+                        : [];
                     if (servicios.length > 0) {
                         const yaMencionado = item.extraText.some(t => servicios.some(s => t.toLowerCase().includes(s.toLowerCase())));
                         if (!yaMencionado) {
@@ -1046,7 +1043,7 @@ function obtenerAnexosDocumento(diagnostico) {
                 'Ejemplo funcional: pide una rúbrica indicando nivel y criterios, sin adjuntar notas ni trabajos. Si necesitas un caso, usa un perfil sintético. Sustituir un nombre por "Persona A" no anonimiza si el contexto permite identificar a la persona.',
                 ...(document.getElementById('tool-prof-1').checked ? ['Informa al alumnado cuándo y cómo se puede usar la IA en la actividad.'] : []),
                 ...(document.getElementById('tool-prof-4').checked ? ['Mantén actualizadas tus competencias digitales y revisa las respuestas antes de utilizarlas.'] : []),
-                ...(document.getElementById('norma-1')?.checked ? ['Declara con naturalidad el uso de IA al diseñar situaciones de aprendizaje, rúbricas o recursos de aula, indicando la herramienta empleada y la revisión docente aplicada.'] : ['Elemento para la reflexión docente: Valorar en departamento o ciclo la conveniencia de documentar de forma transparente el uso de IA en la preparación de situaciones de aprendizaje y materiales, acordando criterios comunes de centro.'])
+                ...(document.getElementById('norma-1')?.checked ? ['Sigue el criterio del centro sobre cuándo y cómo comunicar el uso de IA al preparar situaciones de aprendizaje, rúbricas o recursos de aula.'] : ['Elemento para la reflexión docente: Valorar en departamento o ciclo la conveniencia de documentar de forma transparente el uso de IA en la preparación de situaciones de aprendizaje y materiales, acordando criterios comunes de centro.'])
             ]
         }]
     };
@@ -1082,7 +1079,7 @@ function obtenerAnexosDocumento(diagnostico) {
                     'Respeta la intimidad y la convivencia: está terminantemente prohibido utilizar la IA para generar, manipular o difundir imágenes, vídeos o grabaciones de voz de compañeros, compañeras o docentes, o cualquier contenido que pueda herir o acosar a otras personas. Si detectas estas conductas o sufres acoso digital, acude de inmediato al profesorado o llama de forma gratuita y confidencial a la Línea de Ayuda en Ciberseguridad del INCIBE (teléfono 017).',
                     'Sigue las indicaciones del profesorado antes de compartir datos personales propios o ajenos. Comparte solo lo necesario y, si no sabes qué información puede usarse, pregunta antes.',
                     'Comprueba las respuestas con los materiales de clase o con fuentes fiables; la IA puede equivocarse.',
-                    ...(document.getElementById('norma-1').checked ? ['Declara cuándo has utilizado IA y describe cómo te ayudó.'] : []),
+                    ...(document.getElementById('norma-1').checked ? ['Sigue las indicaciones del profesorado sobre cuándo y cómo comunicar el uso de IA.'] : []),
                     ...(document.getElementById('norma-4').checked ? ['Utiliza tu dispositivo personal para una actividad con IA solo si el centro lo permite. Sigue las indicaciones del profesorado sobre cuándo y cómo utilizarlo.'] : [])
                 ]
             }]
@@ -1107,7 +1104,7 @@ function obtenerAnexosDocumento(diagnostico) {
         const guiaAlumnadoLecturaFacil = {
             tipo: 'informativo',
             titulo: 'Guía de buen uso para el alumnado (lenguaje claro)',
-            introduccion: `${aperturaLenguajeSencilloAlumnadoPorTipologia[tipo] || ''} Esta guía usa palabras sencillas. Si no entiendes algo, pide ayuda a tu profe.`.trim(),
+            introduccion: `Si el centro propone usar IA en una actividad, esta guía te ayudará. Usa palabras sencillas. Si no entiendes algo, pide ayuda a tu profe. ${aperturaLenguajeSencilloAlumnadoPorTipologia[tipo] || ''}`.trim(),
             secciones: [{
                 titulo: 'Ideas importantes',
                 elementos: [
@@ -1119,7 +1116,7 @@ function obtenerAnexosDocumento(diagnostico) {
                     'Comprueba las respuestas con los materiales de clase.',
                     'Haz la actividad como te explique tu profe.',
                     'No escribas datos que digan quién eres. Por ejemplo: tu nombre, tu dirección o una foto. Antes de compartir datos de otra persona, pregunta a tu profe.',
-                    ...(document.getElementById('norma-1').checked ? ['Si usas IA en una tarea, dilo. Cuenta qué te ayudó a hacer.'] : []),
+                    ...(document.getElementById('norma-1').checked ? ['Si te piden que cuentes si has usado IA, sigue las indicaciones del profesorado.'] : []),
                     ...(document.getElementById('norma-4').checked ? ['Usa tu móvil, tableta u ordenador solo si el centro lo permite. Haz lo que te indique tu profe.'] : [])
                 ]
             }]

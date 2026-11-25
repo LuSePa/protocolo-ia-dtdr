@@ -130,7 +130,7 @@
                     annex: "ANEXO_PROTECCION_DATOS_ESPECIAL",
                     bibliography: "RGPD, artículos 6 y 9, si se tratan datos de salud: base jurídica y excepción aplicable para categorías especiales; LOPDGDD, artículo 5.",
                     regulatoryBasis: "RGPD, artículos 6 y 9, si se tratan datos de salud: base jurídica y excepción aplicable para categorías especiales; LOPDGDD, artículo 5.",
-                    justification: "Si algún uso de IA afecta a estas actividades, el protocolo puede indicar cómo darles continuidad educativa y qué información de salud sería necesaria."
+                    justification: "Si algún uso de IA afecta a la atención educativa durante una hospitalización o convalecencia en el domicilio, el protocolo puede indicar cómo dar continuidad educativa y qué información de salud sería necesaria."
                 },
                 {
                     id: "medidas_proteccion",
@@ -141,7 +141,7 @@
                     annex: "ANEXO_PROTECCION_DATOS_ESPECIAL",
                         bibliography: "Ley 7/2023 de Castilla-La Mancha, artículo 33, actuación sobre acceso a medios telemáticos para menores con medidas de protección; RGPD, artículos 5, 6 y 12 a 14 si se tratan datos personales (principios, base jurídica e información según el origen de los datos); LOPDGDD, artículo 5.",
                         regulatoryBasis: "Ley 7/2023 de Castilla-La Mancha, artículo 33, actuación sobre acceso a medios telemáticos para menores con medidas de protección; RGPD, artículos 5, 6 y 12 a 14 si se tratan datos personales (principios, base jurídica e información según el origen de los datos); LOPDGDD, artículo 5.",
-                    justification: "Si un uso de IA requiere consultar información sobre esta situación, el protocolo puede indicar quién podrá acceder a ella y cómo se cuidará."
+                    justification: "Si un uso de IA requiere consultar información sobre medidas de protección o acogimiento de alumnado menor de edad, el protocolo puede indicar quién podrá acceder a ella y cómo se cuidará."
                 },
                 {
                     id: "educacion_especial",
@@ -161,8 +161,8 @@
                     consequence: "El protocolo podrá concretar el acceso a información relacionada con el caso y la coordinación necesaria para las actividades.",
                     warning: "La información judicial debe manejarse con el rigor y la autoridad competentes, sin compartirla de forma amplia.",
                     annex: "ANEXO_PROTECCION_DATOS_ESPECIAL",
-                    bibliography: "RGPD, artículo 10, y LOPDGDD, artículo 10, si se tratan datos de condenas, infracciones o medidas conexas; su tratamiento exige supervisión pública o habilitación legal, según el caso. LOPDGDD, artículo 5.",
-                    regulatoryBasis: "RGPD, artículo 10, y LOPDGDD, artículo 10, si se tratan datos de condenas, infracciones o medidas conexas; su tratamiento exige supervisión pública o habilitación legal, según el caso. LOPDGDD, artículo 5.",
+                    bibliography: "RGPD, artículo 10, y LOPDGDD, artículo 10, si se tratan datos de condenas, infracciones o medidas conexas. Su tratamiento exige supervisión pública o habilitación legal, según el caso. LOPDGDD, artículo 5.",
+                    regulatoryBasis: "RGPD, artículo 10, y LOPDGDD, artículo 10, si se tratan datos de condenas, infracciones o medidas conexas. Su tratamiento exige supervisión pública o habilitación legal, según el caso. LOPDGDD, artículo 5.",
                     justification: "Se han señalado actividades con medidas judiciales; el protocolo tendrá en cuenta el acceso a la información del caso y la coordinación necesaria."
                 }
             ]
@@ -256,7 +256,7 @@ CARD_RURAL: {
                 },
                 {
                     id: "alternativas",
-                    label: "Necesidad de alternativas por falta de dispositivo, conexión o accesibilidad",
+                    label: "Necesidad de alternativas por falta de dispositivos, conexión o accesibilidad",
                     description: "Conviene prever otra forma de participar cuando algún grupo no dispone de dispositivo o conexión, o cuando una herramienta no resulta accesible.",
                     consequence: "El protocolo incorporará recursos analógicos, presenciales o asistidos para favorecer la igualdad de oportunidades.",
                     warning: "Una alternativa válida debe estar disponible antes de exigir el uso de una herramienta digital concreta.",

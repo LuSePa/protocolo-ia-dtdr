@@ -1013,15 +1013,9 @@ function actualizarRecordatorioServiciosPaso4() {
     const recordatorio = document.getElementById('recordatorio-servicios-paso2');
     if (!recordatorio) return;
 
-    const servicios = [];
-    if (state.serviciosGestionadosCentro) {
-        const lineasCentro = String(state.serviciosGestionadosCentro).split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-        servicios.push(...lineasCentro);
-    }
-    if (state.otrosEntornosInstitucionales) {
-        const lineasOtros = String(state.otrosEntornosInstitucionales).split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-        servicios.push(...lineasOtros);
-    }
+    const servicios = (state.modalidadesInstitucionales || []).includes('centro')
+        ? String(state.serviciosGestionadosCentro || '').split(/\r?\n/).map(l => l.trim()).filter(Boolean)
+        : [];
 
     if (servicios.length > 0) {
         const etiqueta = 'Licencias o contratos gestionados por el centro:';
@@ -1259,7 +1253,11 @@ function aplicarDatosAFormulario(data) {
     const tipoSelect = document.getElementById('tipo-centro');
     if (tipoSelect) {
         tipoSelect.value = data.tipo || '';
-        if (data.tipo) adaptarFormulario();
+        if (data.tipo) {
+            // La restauración conserva las edades guardadas; no es un cambio de tipología.
+            tipoCentroAnterior = tipoSelect.value.toLowerCase();
+            adaptarFormulario();
+        }
     }
 
     document.querySelectorAll('.textarea-extra-wrapper').forEach(wrapper => wrapper.remove());
@@ -1329,6 +1327,8 @@ function aplicarDatosAFormulario(data) {
 
     }
 
+    renderizarEntornosInstitucionales();
+
     document.querySelectorAll('.main-checkbox').forEach(chk => {
 
         const containerId =
@@ -1341,11 +1341,7 @@ function aplicarDatosAFormulario(data) {
 
     });
 
-    if (
-        Number.isInteger(data.configuracionIndex)
-    ) {
-        state.configuracionIndex = data.configuracionIndex;
-    }
+    state.configuracionIndex = Number.isInteger(data.configuracionIndex) ? data.configuracionIndex : 0;
 
     if (typeof data.pasoActual !== 'number' || data.pasoActual <= 0) {
         actualizarVisibilidadGuardar();
@@ -1517,7 +1513,10 @@ function crearTextareaExtra(group, textareaBase, valor = '') {
     );
 
     const addPlaceholder = textareaBase.getAttribute('data-add-placeholder');
-    if (addPlaceholder) nuevoTextarea.setAttribute('data-add-placeholder', addPlaceholder);
+    if (addPlaceholder) {
+        nuevoTextarea.setAttribute('data-add-placeholder', addPlaceholder);
+        nuevoTextarea.setAttribute('aria-label', addPlaceholder);
+    }
 
 nuevoTextarea.setAttribute(
     'data-parent',
@@ -1653,6 +1652,50 @@ function ejecutarCargaSesion(data) {
     showModal("Carga completada", "Datos restaurados correctamente.");
 }
 
+function esSesionJSONValida(data) {
+    const esObjeto = valor => valor !== null && typeof valor === 'object' && !Array.isArray(valor);
+    if (!esObjeto(data)) return false;
+    if (!['nombre', 'tipo', 'localidad'].every(campo => typeof data[campo] === 'string')) return false;
+    if (!Number.isInteger(data.pasoActual) || data.pasoActual < 0 || data.pasoActual > 6) return false;
+    if (!esObjeto(data.contextoSeleccionado) || !esObjeto(data.inputs)) return false;
+    if (!Object.values(data.contextoSeleccionado).every(valor => typeof valor === 'boolean')) return false;
+    if (!Object.values(data.inputs).every(valor =>
+        typeof valor === 'boolean' || typeof valor === 'string' ||
+        (Array.isArray(valor) && valor.every(linea => typeof linea === 'string'))
+    )) return false;
+
+    const tipoSelect = document.getElementById('tipo-centro');
+    if (!tipoSelect || !Array.from(tipoSelect.options).some(opcion => opcion.value === data.tipo)) return false;
+    if (data.versionFlujo !== undefined &&
+        (!Number.isInteger(data.versionFlujo) || data.versionFlujo < 0 || data.versionFlujo > 2)) return false;
+    if (data.versionHerramientas !== undefined &&
+        (!Number.isInteger(data.versionHerramientas) || data.versionHerramientas < 0 || data.versionHerramientas > 7)) return false;
+    if (data.configuracionIndex !== undefined &&
+        (!Number.isInteger(data.configuracionIndex) || data.configuracionIndex < 0)) return false;
+    if (data.pantallaPaso1 !== undefined &&
+        !['identificacion', 'configuracion', 'resumen'].includes(data.pantallaPaso1)) return false;
+    const recuperaConfiguracion = data.pasoActual === 1 &&
+        (data.versionFlujo === 2 ? data.pantallaPaso1 === 'configuracion' : data.configuracionIndex !== undefined);
+    if (recuperaConfiguracion &&
+        (data.configuracionIndex === undefined ||
+            data.configuracionIndex >= obtenerPreguntasConfiguracion(data.tipo).length)) return false;
+    if (!['edicionResumen', 'edicionDatosCentro', 'aulaPenitenciaria', 'iaSinConexion', 'centroSinIA']
+        .every(campo => data[campo] === undefined || typeof data[campo] === 'boolean')) return false;
+    if (!['serviciosGestionadosCentro', 'otrosEntornosInstitucionales']
+        .every(campo => data[campo] === undefined || typeof data[campo] === 'string')) return false;
+    if (data.modalidadesInstitucionales !== undefined &&
+        (!Array.isArray(data.modalidadesInstitucionales) ||
+            !data.modalidadesInstitucionales.every(modalidad =>
+                modalidadesInstitucionalesDisponibles.some(disponible => disponible.id === modalidad)))) return false;
+    if (data.herramientasAutorizadas !== undefined &&
+        (!Array.isArray(data.herramientasAutorizadas) ||
+            !data.herramientasAutorizadas.every(herramienta =>
+                esObjeto(herramienta) &&
+                ['id', 'nombre', 'modalidadAcceso'].every(campo =>
+                    herramienta[campo] === undefined || typeof herramienta[campo] === 'string')))) return false;
+    return true;
+}
+
 function importarSesionJSON(event) {
     const file = event.target?.files?.[0];
     if (!file) return;
@@ -1660,7 +1703,7 @@ function importarSesionJSON(event) {
     reader.onload = function(e) {
         try {
             const data = JSON.parse(e.target.result);
-            if (!data || typeof data !== 'object' || Array.isArray(data)) {
+            if (!esSesionJSONValida(data)) {
                 throw new Error('Invalid session JSON');
             }
             const hayDatosActivos = Boolean(localStorage.getItem('protocoloIA_Data')) || state.pasoActual > 0;
@@ -1675,12 +1718,22 @@ function importarSesionJSON(event) {
                 ejecutarCargaSesion(data);
             }
         } catch (err) { 
-            showModal("Error", "El archivo no es válido."); 
+            showModal("Error", "El archivo no es válido o no es compatible con esta versión.");
         } finally {
             if (event.target) event.target.value = '';
         }
     };
     reader.readAsText(file);
+}
+
+let focoAnteriorModal = null;
+
+function abrirModal(elementoInicial) {
+    const modal = document.getElementById('custom-modal');
+    if (!modal) return;
+    if (modal.style.display !== 'flex') focoAnteriorModal = document.activeElement;
+    modal.style.display = 'flex';
+    elementoInicial?.focus();
 }
 
 function showModal(title, message, isHtml = false) {
@@ -1700,10 +1753,9 @@ function showModal(title, message, isHtml = false) {
     }
     const btns = document.getElementById('modal-btns');
     if (btns) {
-        btns.innerHTML = '<button class="btn btn-primary" onclick="cerrarModal()">Aceptar</button>';
+        btns.innerHTML = '<button class="btn btn-primary" id="modal-accept-btn" onclick="cerrarModal()">Aceptar</button>';
     }
-    const modalEl = document.getElementById('custom-modal');
-    if (modalEl) modalEl.style.display = 'flex';
+    abrirModal(document.getElementById('modal-accept-btn'));
 }
 
 function mostrarDeclaracionTransparencia() {
@@ -1727,18 +1779,33 @@ function restablecerPresentacionModal() {
 }
 
 function cerrarModal() {
-
-    document.getElementById(
-        'custom-modal'
-    ).style.display = 'none';
+    const modal = document.getElementById('custom-modal');
+    if (!modal || modal.style.display !== 'flex') return;
+    modal.style.display = 'none';
     restablecerPresentacionModal();
-
+    const focoAnterior = focoAnteriorModal;
+    focoAnteriorModal = null;
+    if (focoAnterior?.isConnected && typeof focoAnterior.focus === 'function') focoAnterior.focus();
 }
 
-document.addEventListener('keydown', function(event) {
-
-    if (event.key === 'Escape') {
-
+function gestionarTecladoModal(event) {
+    const modal = document.getElementById('custom-modal');
+    const modalAbierto = modal?.style.display === 'flex';
+    if (modalAbierto && event.key === 'Tab') {
+        const botones = Array.from(modal.querySelectorAll('button:not([disabled])'));
+        if (!botones.length) return;
+        const primero = botones[0];
+        const ultimo = botones[botones.length - 1];
+        if (!modal.contains(document.activeElement) || (event.shiftKey && document.activeElement === primero) || (!event.shiftKey && document.activeElement === ultimo)) {
+            event.preventDefault();
+            (event.shiftKey ? ultimo : primero).focus();
+        }
+    } else if (event.key === 'Escape') {
+        if (modalAbierto) {
+            event.preventDefault();
+            cerrarModal();
+            return;
+        }
         const helpToggle = document.querySelector('.section-help-toggle[aria-expanded="true"]');
         if (helpToggle) {
             const panel = document.getElementById(helpToggle.getAttribute('aria-controls'));
@@ -1746,12 +1813,10 @@ document.addEventListener('keydown', function(event) {
             if (panel) panel.hidden = true;
             helpToggle.focus();
         }
-
-        cerrarModal();
-
     }
+}
 
-});
+document.addEventListener('keydown', gestionarTecladoModal);
 
 function showConfirmModal(
     title,
@@ -1784,13 +1849,7 @@ function showConfirmModal(
         </button>
     `;
 
-    document.getElementById(
-        'custom-modal'
-    ).style.display = 'flex';
-
-    document.getElementById(
-    'modal-confirm-btn'
-    ).focus();
+    abrirModal(document.getElementById('modal-confirm-btn'));
 
     document.getElementById(
         'modal-confirm-btn'
@@ -2082,8 +2141,8 @@ const descripcionesAsistentePorTipologia = {
     }
 };
 
-function obtenerPreguntasConfiguracion() {
-    const tipo = document.getElementById('tipo-centro')?.value.toLowerCase() || '';
+function obtenerPreguntasConfiguracion(tipoCentro) {
+    const tipo = (tipoCentro ?? document.getElementById('tipo-centro')?.value ?? '').toLowerCase();
     const contextosVulnerabilidad = {
         escuela_infantil: {
             alumnado: 'alumnado de alguno de los grupos de la escuela infantil',
